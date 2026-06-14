@@ -47,7 +47,7 @@
 
             try {
                 // When deploying, change 'localhost' to your AWS Public IP address
-                const res = await fetch(`http://localhost:5000/api/compare?item=${encodeURIComponent(item)}&city=${city}`);
+                const res = await fetch(`http://3.111.31.240:5000/api/compare?item=${encodeURIComponent(item)}&city=${city}`);
                 const data = await res.json();
                 loader.classList.add('hidden');
 
