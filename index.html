@@ -15,14 +15,23 @@
         </div>
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3">
-            <input id="itemQuery" type="text" placeholder="What are you buying? (e.g., Amul Butter, Coca Cola)" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            <input id="itemQuery" type="text" placeholder="What are you buying? (e.g., Amul Butter, Coca Cola, Kurkure)" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
             
-            <select id="cityQuery" class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                <option value="bangalore">Bengaluru</option>
-                <option value="delhi">Delhi NCR</option>
-                <option value="mumbai">Mumbai</option>
-                <option value="hyderabad">Hyderabad</option>
-            </select>
+            <div class="grid grid-cols-2 gap-3">
+                <input id="pincodeQuery" type="number" placeholder="Pincode (e.g., 560001)" min="100000" max="999999" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+
+                <select id="quantityQuery" class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <option value="">Any Size / Pack</option>
+                    <option value="100g">100g</option>
+                    <option value="200g">200g</option>
+                    <option value="250g">250g</option>
+                    <option value="500g">500g</option>
+                    <option value="1kg">1 kg</option>
+                    <option value="1l">1 Litre</option>
+                    <option value="250ml">250 ml</option>
+                    <option value="750ml">750 ml</option>
+                </select>
+            </div>
 
             <button onclick="runComparison()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">
                 Find Cheapest Price
@@ -35,20 +44,26 @@
 
     <script>
         async function runComparison() {
-            const item = document.getElementById('itemQuery').value;
-            const city = document.getElementById('cityQuery').value;
+            const item = document.getElementById('itemQuery').value.trim();
+            const pincode = document.getElementById('pincodeQuery').value.trim();
+            const quantity = document.getElementById('quantityQuery').value;
             const loader = document.getElementById('loadingIndicator');
             const container = document.getElementById('resultsLayout');
 
+            // Explicit verification gates before hitting network streams
             if (!item) return alert("Please type a product name first!");
+            if (!pincode) return alert("Please enter your local neighborhood delivery pincode!");
+            if (pincode.length !== 6) return alert("Please enter a valid 6-digit Indian delivery pincode.");
 
             loader.classList.remove('hidden');
             container.innerHTML = '';
 
             try {
-                // When deploying, change 'localhost' to your AWS Public IP address
-                const res = await fetch(`http://3.111.31.240:5000/api/compare?item=${encodeURIComponent(item)}&city=${city}`);
+                // Dispatches query layers securely to the hyper-local backend pipeline API
+                const url = `http://3.111.31.240:5000/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
+                const res = await fetch(url);
                 const data = await res.json();
+                
                 loader.classList.add('hidden');
 
                 if (data.error) {
@@ -62,7 +77,7 @@
 
                     if (prod.isCheapest) {
                         cardBorder = "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-400 shadow-md";
-                        badge = `<span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wide">★ Lowest Price</span>`;
+                        badge = `<span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wide mb-1 inline-block">★ Lowest Price</span>`;
                     }
 
                     container.innerHTML += `
@@ -71,8 +86,8 @@
                                 <img src="${prod.image}" class="w-16 h-16 object-contain bg-white rounded-xl border p-1" onerror="this.src='https://placehold.co/150'">
                                 <div>
                                     ${badge}
-                                    <h3 class="font-extrabold text-slate-900 text-lg mt-0.5">${prod.store}</h3>
-                                    <p class="text-xs text-slate-400 line-clamp-1 max-w-[220px]">${prod.name}</p>
+                                    <h3 class="font-extrabold text-slate-900 text-lg leading-tight">${prod.store}</h3>
+                                    <p class="text-xs text-slate-500 line-clamp-1 max-w-[220px] mt-0.5">${prod.name}</p>
                                 </div>
                             </div>
                             <div class="text-right">
