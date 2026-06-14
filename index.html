@@ -8,7 +8,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
 
-    <!-- Main Content Wrapper Container -->
     <div class="max-w-xl mx-auto mt-12 p-4 w-full mb-16">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-black text-indigo-600 tracking-tight">⚡ FlashPrice</h1>
@@ -43,7 +42,6 @@
         <div id="resultsLayout" class="mt-8 flex flex-col gap-4"></div>
     </div>
 
-    <!-- Streamlined Professional Developer Footer -->
     <footer class="w-full text-center py-5 border-t border-slate-200 bg-white text-sm text-slate-500 mt-auto">
         <div class="max-w-xl mx-auto px-4 flex items-center justify-center gap-3">
             <img src="Santhosh.JPG" alt="Santhosh S" class="w-9 h-9 rounded-full border border-indigo-200 object-cover shadow-sm">
@@ -67,8 +65,9 @@
             container.innerHTML = '';
 
             try {
-                const url = `https://13.202.102.154:5000/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
-                console.log("Fetching from:", url);
+                // Fixed: Removed the hardcoded IP address and port to route securely via Nginx
+                const url = `/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
+                console.log("Fetching relative route from:", url);
 
                 const res = await fetch(url);
                 const data = await res.json();
