@@ -67,7 +67,7 @@
             container.innerHTML = '';
 
             try {
-                const url = `http://13.202.102.154:5000/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
+                const url = `https://13.202.102.154:5000/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
                 console.log("Fetching from:", url);
 
                 const res = await fetch(url);
