@@ -8,6 +8,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
 
+    <!-- Main Content Wrapper Container -->
     <div class="max-w-xl mx-auto mt-12 p-4 w-full mb-16">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-black text-indigo-600 tracking-tight">⚡ FlashPrice</h1>
@@ -42,17 +43,11 @@
         <div id="resultsLayout" class="mt-8 flex flex-col gap-4"></div>
     </div>
 
-    <footer class="w-full text-center py-6 border-t border-slate-200 bg-white text-sm text-slate-500 mt-auto">
-        <div class="max-w-xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <img src="Santhosh.JPG" alt="Santhosh Chari" class="w-9 h-9 rounded-full border border-indigo-200 object-cover shadow-sm">
-                <p class="text-left leading-tight">Designed & Engineered by <br class="sm:hidden"><span class="font-bold text-slate-800">Santhosh Chari</span></p>
-            </div>
-            <div class="flex gap-4 font-medium text-indigo-600">
-                <a href="https://github.com/santhoshchariengineer" target="_blank" class="hover:text-indigo-800 transition hover:underline">GitHub</a>
-                <span class="text-slate-300">|</span>
-                <a href="#" target="_blank" class="hover:text-indigo-800 transition hover:underline">LinkedIn</a>
-            </div>
+    <!-- Streamlined Professional Developer Footer -->
+    <footer class="w-full text-center py-5 border-t border-slate-200 bg-white text-sm text-slate-500 mt-auto">
+        <div class="max-w-xl mx-auto px-4 flex items-center justify-center gap-3">
+            <img src="Santhosh.JPG" alt="Santhosh S" class="w-9 h-9 rounded-full border border-indigo-200 object-cover shadow-sm">
+            <p class="text-slate-600 font-medium">Designed & Engineered by <span class="font-bold text-slate-900">Santhosh S</span></p>
         </div>
     </footer>
 
@@ -64,7 +59,6 @@
             const loader = document.getElementById('loadingIndicator');
             const container = document.getElementById('resultsLayout');
 
-            // Hard input check before hitting the network pipeline
             if (!item) return alert("Please type a product name first!");
             if (!pincode) return alert("Please enter your 6-digit delivery pincode!");
             if (pincode.length !== 6) return alert("Please enter a valid 6-digit Indian delivery pincode.");
@@ -73,7 +67,6 @@
             container.innerHTML = '';
 
             try {
-                // FIXED: This URL sends pincode and quantity to match the updated server.js route parameters
                 const url = `http://3.111.31.240:5000/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
                 console.log("Fetching from:", url);
 
