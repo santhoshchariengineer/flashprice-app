@@ -15,10 +15,10 @@
         </div>
 
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3">
-            <input id="itemQuery" type="text" placeholder="What are you buying? (e.g., Amul Butter, Coca Cola, Kurkure)" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            <input id="itemQuery" type="text" placeholder="What are you buying? (e.g., Amul Butter, Nandini, Kurkure)" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
             
             <div class="grid grid-cols-2 gap-3">
-                <input id="pincodeQuery" type="number" placeholder="Pincode (e.g., 560001)" min="100000" max="999999" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <input id="pincodeQuery" type="number" placeholder="Pincode (e.g., 560104)" min="100000" max="999999" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
 
                 <select id="quantityQuery" class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     <option value="">Any Size / Pack</option>
@@ -50,17 +50,19 @@
             const loader = document.getElementById('loadingIndicator');
             const container = document.getElementById('resultsLayout');
 
-            // Explicit verification gates before hitting network streams
+            // Hard input check before hitting the network pipeline
             if (!item) return alert("Please type a product name first!");
-            if (!pincode) return alert("Please enter your local neighborhood delivery pincode!");
+            if (!pincode) return alert("Please enter your 6-digit delivery pincode!");
             if (pincode.length !== 6) return alert("Please enter a valid 6-digit Indian delivery pincode.");
 
             loader.classList.remove('hidden');
             container.innerHTML = '';
 
             try {
-                // Dispatches query layers securely to the hyper-local backend pipeline API
+                // FIXED: This URL sends pincode and quantity to match the updated server.js route parameters
                 const url = `http://3.111.31.240:5000/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
+                console.log("Fetching from:", url);
+
                 const res = await fetch(url);
                 const data = await res.json();
                 
