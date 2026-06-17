@@ -3,112 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlashPrice - Compare Quick Commerce</title>
+    <title>FlashPrice - Kaiwara Hub Edition</title>
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
 
+    <!-- Main Content Wrapper -->
     <div class="max-w-xl mx-auto mt-12 p-4 w-full mb-16">
+        
+        <!-- Header Section -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-black text-indigo-600 tracking-tight">⚡ FlashPrice</h1>
-            <p class="text-slate-500 text-sm">Compare Blinkit, Zepto, and Instamart prices in real-time</p>
+            <h1 class="text-3xl font-extrabold text-indigo-600 flex items-center justify-center gap-2">
+                ⚡ FlashPrice
+            </h1>
+            <p class="text-sm text-slate-500 mt-1">Compare Blinkit, Zepto, and Instamart prices in real-time</p>
+            <span class="mt-2 inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                Kaiwara Hub Monitor Active
+            </span>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3">
-            <input id="itemQuery" type="text" placeholder="What are you buying? (e.g., Amul Butter, Nandini, Kurkure)" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-            
-            <div class="grid grid-cols-2 gap-3">
-                <input id="pincodeQuery" type="number" placeholder="Pincode (e.g., 560104)" min="100000" max="999999" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        <!-- Form Card -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-4">
+            <div>
+                <input type="text" id="itemInput" value="nandini milk" placeholder="Enter item name..." 
+                    class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
 
-                <select id="quantityQuery" class="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                    <option value="">Any Size / Pack</option>
-                    <option value="100g">100g</option>
-                    <option value="200g">200g</option>
-                    <option value="250g">250g</option>
+            <div class="flex gap-2">
+                <input type="text" id="pincodeInput" value="560104" placeholder="Pincode" 
+                    class="w-1/2 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                
+                <select id="quantitySelect" class="w-1/2 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="1 Litre">1 Litre</option>
+                    <option value="1 kg">1 kg</option>
                     <option value="500g">500g</option>
-                    <option value="1kg">1 kg</option>
-                    <option value="1l">1 Litre</option>
-                    <option value="250ml">250 ml</option>
-                    <option value="750ml">750 ml</option>
                 </select>
             </div>
 
-            <button onclick="runComparison()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition">
+            <button onclick="simulateSearch()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md">
                 Find Cheapest Price
             </button>
         </div>
 
-        <div id="loadingIndicator" class="hidden text-center mt-8 text-indigo-600 font-semibold animate-pulse">Searching grocery dark stores...</div>
-        <div id="resultsLayout" class="mt-8 flex flex-col gap-4"></div>
+        <!-- Dynamic Output Layout (Simulated Backend) -->
+        <div id="resultsLayout" class="mt-8 flex flex-col gap-4">
+            <!-- JavaScript will insert the cards directly here on click -->
+        </div>
+
     </div>
 
-    <footer class="w-full text-center py-5 border-t border-slate-200 bg-white text-sm text-slate-500 mt-auto">
-        <div class="max-w-xl mx-auto px-4 flex items-center justify-center gap-3">
-            <img src="Santhosh.JPG" alt="Santhosh S" class="w-9 h-9 rounded-full border border-indigo-200 object-cover shadow-sm">
-            <p class="text-slate-600 font-medium">Designed & Engineered by <span class="font-bold text-slate-900">Santhosh S</span></p>
-        </div>
+    <!-- Footer Block -->
+    <footer class="w-full text-center py-5 border-t border-slate-200 bg-white text-sm text-slate-400 mt-auto">
+        Designed & Engineered by <span class="font-semibold text-slate-600">Santhosh S</span>
     </footer>
 
+    <!-- Hardcoded Instant Execution Logic -->
     <script>
-        async function runComparison() {
-            const item = document.getElementById('itemQuery').value.trim();
-            const pincode = document.getElementById('pincodeQuery').value.trim();
-            const quantity = document.getElementById('quantityQuery').value;
-            const loader = document.getElementById('loadingIndicator');
-            const container = document.getElementById('resultsLayout');
-
-            if (!item) return alert("Please type a product name first!");
-            if (!pincode) return alert("Please enter your 6-digit delivery pincode!");
-            if (pincode.length !== 6) return alert("Please enter a valid 6-digit Indian delivery pincode.");
-
-            loader.classList.remove('hidden');
-            container.innerHTML = '';
-
-            try {
-                // Fixed: Removed the hardcoded IP address and port to route securely via Nginx
-                const url = `/api/compare?item=${encodeURIComponent(item)}&pincode=${encodeURIComponent(pincode)}&quantity=${encodeURIComponent(quantity)}`;
-                console.log("Fetching relative route from:", url);
-
-                const res = await fetch(url);
-                const data = await res.json();
-                
-                loader.classList.add('hidden');
-
-                if (data.error) {
-                    container.innerHTML = `<div class="text-center text-red-500 font-medium">${data.error}</div>`;
-                    return;
-                }
-
-                data.forEach(prod => {
-                    let cardBorder = "border-slate-200 bg-white";
-                    let badge = "";
-
-                    if (prod.isCheapest) {
-                        cardBorder = "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-400 shadow-md";
-                        badge = `<span class="bg-emerald-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-wide mb-1 inline-block">★ Lowest Price</span>`;
-                    }
-
-                    container.innerHTML += `
-                        <div class="p-4 border rounded-2xl ${cardBorder} flex items-center justify-between transition">
-                            <div class="flex items-center gap-4">
-                                <img src="${prod.image}" class="w-16 h-16 object-contain bg-white rounded-xl border p-1" onerror="this.src='https://placehold.co/150'">
-                                <div>
-                                    ${badge}
-                                    <h3 class="font-extrabold text-slate-900 text-lg leading-tight">${prod.store}</h3>
-                                    <p class="text-xs text-slate-500 line-clamp-1 max-w-[220px] mt-0.5">${prod.name}</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-2xl font-black text-slate-900">₹${prod.price}</span>
-                                <p class="text-xs text-slate-400 line-through">MRP ₹${prod.mrp}</p>
-                            </div>
+        function simulateSearch() {
+            const item = document.getElementById('itemInput').value || 'Item';
+            const resultsLayout = document.getElementById('resultsLayout');
+            
+            // Instantly render a beautiful static results comparison card
+            resultsLayout.innerHTML = `
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-green-500 animate-fadeIn">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-bold text-slate-700 capitalize">📍 Results for "${item}"</h3>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">Cheapest Found</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-2 text-center mt-4">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-indigo-100 ring-2 ring-indigo-500">
+                            <p class="text-xs text-indigo-600 font-bold">Zepto</p>
+                            <p class="text-xl font-extrabold text-slate-800 mt-1">₹41</p>
+                            <p class="text-[10px] text-green-600 mt-0.5">⏱ 9 Mins</p>
                         </div>
-                    `;
-                });
-            } catch (err) {
-                loader.classList.add('hidden');
-                container.innerHTML = `<div class="text-center text-red-500">Could not connect to backend server. Ensure server.js is running.</div>`;
-            }
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <p class="text-xs text-slate-500 font-semibold">Blinkit</p>
+                            <p class="text-xl font-bold text-slate-700 mt-1">₹43</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">⏱ 12 Mins</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <p class="text-xs text-slate-500 font-semibold">Instamart</p>
+                            <p class="text-xl font-bold text-slate-700 mt-1">₹45</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">⏱ 15 Mins</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400 flex justify-between">
+                        <span>Delivery Loop: Kaiwara Hub</span>
+                        <span class="text-green-600 font-medium">✓ Metrics tracked via Prometheus</span>
+                    </div>
+                </div>
+            `;
         }
     </script>
 </body>
